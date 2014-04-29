@@ -1,2 +1,2 @@
 language: java
-script: TERM=dumb ./gradlew build
+script: ./script/ci/build.sh

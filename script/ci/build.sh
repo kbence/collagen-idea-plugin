@@ -1,3 +1,3 @@
 #!/bin/bash -ex
 
-TERM=dumb ./gradlew build --info --stack
+TERM=dumb ./gradlew build --info --stacktrace

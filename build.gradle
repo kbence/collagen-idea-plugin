@@ -1,0 +1,29 @@
+buildscript {
+    repositories {
+        mavenCentral()
+        maven { url "http://clojars.org/repo" }
+    }
+
+    dependencies {
+        classpath 'clojuresque:clojuresque:1.+'
+        classpath 'clojuresque:clojuresque-clojars:1.+'
+    }
+}
+
+apply plugin: 'clojure'
+apply plugin: 'clojars'
+
+version = '0.0.1'
+
+repositories {
+    mavenCentral()
+    clojarsRepo()
+}
+
+dependencies {
+    compile "org.clojure:clojure:1.+"
+}
+
+compileClojure {
+    aotCompile = true
+}

@@ -22,6 +22,8 @@ repositories {
 
 dependencies {
     compile "org.clojure:clojure:1.+"
+
+    compile files(fileTree("lib").findAll { it.name.endsWith(".jar") })
 }
 
 compileClojure {

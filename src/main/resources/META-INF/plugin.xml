@@ -1,19 +1,15 @@
 <idea-plugin version="2">
   <id>org.collagen.plugin.CollagenPlugin</id>
-  <name>Collaborative plugin for IDEA</name>
+  <name>Collagen</name>
   <version>0.0.1</version>
-  <vendor email="bence@kiglics.hu" url="http://github.com/kbence/collagen">Bence Kiglics</vendor>
+  <vendor email="bence@kiglics.hu" url="https://github.com/kbence/collagen-idea-plugin">Bence Kiglics</vendor>
 
   <description><![CDATA[
-      Enter short description for your plugin here.<br>
-      <em>most HTML tags may be used</em>
-    ]]></description>
+    Collaborative plugin for IDEA
+  ]]></description>
 
   <change-notes><![CDATA[
-      Add change notes here.<br>
-      <em>most HTML tags may be used</em>
-    ]]>
-  </change-notes>
+  ]]></change-notes>
 
   <!-- please see http://confluence.jetbrains.com/display/IDEADEV/Build+Number+Ranges for description -->
   <idea-version since-build="131"/>
@@ -26,7 +22,8 @@
 
   <extensions defaultExtensionNs="com.intellij">
     <!-- Add your extensions here -->
-      <toolWindow id="Collagen" anchor="bottom" factoryClass="org.collagen.plugin.ToolWindowFactory"></toolWindow>
+    <toolWindow id="Collagen" icon="/general/add.png" secondary="true" anchor="bottom" factoryClass="org.collagen.plugin.CollagenToolWindowFactory" />
+    <compileServer.plugin classpath="lib/clojure-1.6.0.jar" />
   </extensions>
 
   <application-components>
@@ -34,9 +31,6 @@
   </application-components>
 
   <project-components>
-      <component>
-          <implementation-class>org.collagen.plugin.CollagenPlugin</implementation-class>
-      </component>
     <!-- Add your project components here -->
   </project-components>
 

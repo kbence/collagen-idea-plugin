@@ -23,7 +23,6 @@
   <extensions defaultExtensionNs="com.intellij">
     <!-- Add your extensions here -->
     <toolWindow id="Collagen" icon="/general/add.png" secondary="true" anchor="bottom" factoryClass="org.collagen.plugin.CollagenToolWindowFactory" />
-    <compileServer.plugin classpath="lib/clojure-1.6.0.jar" />
   </extensions>
 
   <application-components>

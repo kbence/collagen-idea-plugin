@@ -1,16 +1,14 @@
-(ns org.collagen.plugin.CollagenToolWindowFactory)
-
-(import [com.intellij.openapi.wm ToolWindowFactory ToolWindow]
-         [com.intellij.openapi.project Project]
-         [javax.swing JPanel])
-
-(gen-class
-  :name org.collagen.plugin.CollagenToolWindowFactory
-  :implements [com.intellij.openapi.wm.ToolWindowFactory])
+(ns org.collagen.plugin.CollagenToolWindowFactory
+  (:import [com.intellij.openapi.wm ToolWindowFactory ToolWindow]
+    [com.intellij.openapi.project Project]
+    [javax.swing JLabel])
+  (:gen-class
+    :name org.collagen.plugin.CollagenToolWindowFactory
+    :implements [com.intellij.openapi.wm.ToolWindowFactory]))
 
 (defn contentFactory []
-  (.getInstance com.intellij.ui.content.ContentFactory$SERVICE))
+  (com.intellij.ui.content.ContentFactory$SERVICE/getInstance))
 
-(defn -createToolWindowContent [#^Project project #^ToolWindow toolWindow]
+(defn -createToolWindowContent [this #^Project project #^ToolWindow toolWindow]
   (.addContent (.getContentManager toolWindow)
-    (.createContent (contentFactory) (JPanel.) "" false)))
+    (.createContent (contentFactory) (JLabel. "Collagen plugin") "" false)))

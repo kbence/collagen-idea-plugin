@@ -22,7 +22,7 @@
 
   <extensions defaultExtensionNs="com.intellij">
     <!-- Add your extensions here -->
-    <toolWindow id="Collagen" icon="/general/add.png" secondary="true" anchor="bottom" factoryClass="org.collagen.plugin.CollagenToolWindowFactory" />
+    <toolWindow id="Collagen" icon="/toolwindows/webToolWindow.png" secondary="true" anchor="right" factoryClass="org.collagen.plugin.CollagenToolWindowFactory" />
   </extensions>
 
   <application-components>

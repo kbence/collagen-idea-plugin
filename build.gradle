@@ -22,10 +22,38 @@ repositories {
 
 dependencies {
     compile "org.clojure:clojure:1.+"
-
     compile files(fileTree("lib").findAll { it.name.endsWith(".jar") })
 }
 
 compileClojure {
     aotCompile = true
+}
+
+task runIdea(type: Exec, dependsOn: build) {
+    def ideaLibDir = "/Applications/IntelliJ IDEA 13.app/lib"
+    def javaLibDir = "/Library/Java/JavaVirtualMachines/jdk1.7.0_45.jdk/Contents/Home/lib"
+
+    def projectRoot = project.rootDir.canonicalPath
+    def ideaConfigRoot = "${projectRoot}/.runner/"
+    def systemDir = "${ideaConfigRoot}/system"
+    def configDir = "${ideaConfigRoot}/config"
+    def ideaClassName = "com.intellij.idea.Main"
+
+    def classPath = (fileTree(ideaLibDir) + fileTree(javaLibDir))
+            .findAll{it.name.endsWith(".jar")}*.absolutePath
+            .join(File.pathSeparator)
+
+    [systemDir, configDir].each { new File(it).mkdirs() }
+
+    args = ["-Xmx800m", "-XX:ReservedCodeCacheSize=64m", "-XX:MaxPermSize=250m",
+            "-XX:+HeapDumpOnOutOfMemoryError", "-ea", "-Didea.is.internal=true",
+            "-Didea.debug.mode=true",
+            "-Didea.system.path=${systemDir}",
+            "-Didea.config.path=${configDir}",
+            "-Dapple.laf.useScreenMenuBar=true",
+            "-Dplugin.path=${projectRoot}/build/main/resources",
+            "-classpath", "${System.getProperty('java.class.path')}:$classPath",
+            ideaClassName]
+
+    executable = "java"
 }

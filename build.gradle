@@ -1,3 +1,5 @@
+import java.nio.file.Files
+
 buildscript {
     repositories {
         mavenCentral()
@@ -29,21 +31,39 @@ compileClojure {
     aotCompile = true
 }
 
-task runIdea(type: Exec, dependsOn: build) {
+task createRuntimeEnvironment {
+    def ideaConfigRoot = "${project.rootDir.canonicalPath}/.runner"
+    def systemDir = "$ideaConfigRoot/system"
+    def configDir = "$ideaConfigRoot/config"
+    def pluginDir = "$ideaConfigRoot/config/plugins/collagen"
+    outputs.files files(["$pluginDir/org", "$pluginDir/META-INF"])
+
+    doFirst {
+        [systemDir, configDir, pluginDir].each { new File(it).mkdirs() }
+
+        Files.createSymbolicLink(getPath("$pluginDir/org"), getPath("../../../../build/classes/main/org"));
+        Files.createSymbolicLink(getPath("$pluginDir/META-INF"), getPath("../../../../build/resources/main/META-INF"))
+    }
+}
+
+task runIdea(type: Exec, dependsOn: [build, createRuntimeEnvironment]) {
     def ideaLibDir = "/Applications/IntelliJ IDEA 13.app/lib"
     def javaLibDir = "/Library/Java/JavaVirtualMachines/jdk1.7.0_45.jdk/Contents/Home/lib"
 
     def projectRoot = project.rootDir.canonicalPath
-    def ideaConfigRoot = "${projectRoot}/.runner/"
-    def systemDir = "${ideaConfigRoot}/system"
-    def configDir = "${ideaConfigRoot}/config"
+    def ideaConfigRoot = "${projectRoot}/.runner"
+    def systemDir = "$ideaConfigRoot/system"
+    def configDir = "$ideaConfigRoot/config"
     def ideaClassName = "com.intellij.idea.Main"
 
     def classPath = (fileTree(ideaLibDir) + fileTree(javaLibDir))
             .findAll{it.name.endsWith(".jar")}*.absolutePath
-            .join(File.pathSeparator)
+    classPath += "$projectRoot/build/classes/main"
 
-    [systemDir, configDir].each { new File(it).mkdirs() }
+    configurations.runtime.each { classPath += it }
+
+    def joinedClassPath = System.getProperty('java.class.path') +
+            File.pathSeparator + classPath.join(File.pathSeparator)
 
     args = ["-Xmx800m", "-XX:ReservedCodeCacheSize=64m", "-XX:MaxPermSize=250m",
             "-XX:+HeapDumpOnOutOfMemoryError", "-ea", "-Didea.is.internal=true",
@@ -51,9 +71,13 @@ task runIdea(type: Exec, dependsOn: build) {
             "-Didea.system.path=${systemDir}",
             "-Didea.config.path=${configDir}",
             "-Dapple.laf.useScreenMenuBar=true",
-            "-Dplugin.path=${projectRoot}/build/main/resources",
-            "-classpath", "${System.getProperty('java.class.path')}:$classPath",
+            "-Dplugin.path=${projectRoot}/build/resources/main",
+            "-classpath", joinedClassPath,
             ideaClassName]
 
     executable = "java"
+}
+
+java.nio.file.Path getPath(String path) {
+    new File(path).toPath()
 }
